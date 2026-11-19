@@ -53,8 +53,14 @@ test('omits a transaction hash the RPC did not report', () => {
 
 test('escapes markup rather than injecting it into the html part', () => {
   const mail = email({ voucherId: '<script>alert(1)</script>', status: 'Claimed' });
-  assert.doesNotMatch(mail.html, /<script>/);
-  assert.match(mail.html, /&lt;script&gt;/);
+  assert.doesNotMatch(mail.html, /<script>/i);
+  assert.match(mail.html, /&lt;script&gt;/i);
+});
+
+test('escapes markup whatever case the payload uses', () => {
+  const mail = email({ voucherId: '<SCRIPT>alert(1)</SCRIPT>', status: 'Claimed' });
+  assert.doesNotMatch(mail.html, /<script>/i);
+  assert.match(mail.html, /&lt;SCRIPT&gt;/);
 });
 
 test('refuses a payload carrying a beneficiary reference', () => {
